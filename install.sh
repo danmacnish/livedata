@@ -1,6 +1,6 @@
 #! /bin/bash
 echo installing modified OWSLib
 cd OWSLib-modified
-python install setup.py
+sudo python setup.py install
 echo installing dependencies
 echo done

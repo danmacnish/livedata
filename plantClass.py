@@ -1,3 +1,5 @@
+import sys
+import Traffic
 
 class Plant:
     def __init__(self):
@@ -5,11 +7,12 @@ class Plant:
 
     def calcPumpDuration(self):
         #calculate pump duration based on error between current moisture and traffic data
+        self.__duration = 10
 
 def main():
     traffic = Traffic()
     t = traffic.update()
     print t
 
-if __name__ = "__main__"
+if __name__ == "__main__":
     sys.exit(main())
