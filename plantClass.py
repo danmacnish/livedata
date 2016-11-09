@@ -1,5 +1,5 @@
 import sys
-import Traffic
+from Traffic import Traffic
 
 class Plant:
     def __init__(self):
@@ -10,9 +10,9 @@ class Plant:
         self.__duration = 10
 
 def main():
-    traffic = Traffic()
-    t = traffic.update()
-    print t
+    trfc = Traffic()
+    t = trfc.update()
+    print(t)
 
 if __name__ == "__main__":
     sys.exit(main())
