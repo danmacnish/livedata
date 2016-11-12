@@ -1,5 +1,6 @@
 from owslib.wfs import WebFeatureService
 from owslib.wms import WebMapService
+import time, datetime
 import json
 
 class Traffic:
@@ -34,11 +35,6 @@ class Traffic:
     def __processJSON(self):
         #process JSON data
         print("processing JSON traffic data")
-        #save JSON data to file
-        out = open('data.json', 'w')
-        out.write(self.__JSONdata.read())
-        out.close()
-        #decode JSON data into python object
         try:
             data = json.load(self.__JSONdata)
             print(data)
@@ -46,6 +42,18 @@ class Traffic:
             print(type(inst))
             print(inst.args)
             print(inst)
+        #save JSON data to file
+        print('saving json data to file')
+        try:
+            out = open('data ' + str(datetime.datetime.now()) + '.json', 'w')
+            out.write(self.__JSONdata.read())
+            out.close()
+        except IOError as inst:
+            print(type(inst))
+            print(inst.args)
+            print(inst)
+        #decode JSON data into python object
+
 
     def update(self):
         self.__traffic = 100
