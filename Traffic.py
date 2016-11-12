@@ -1,6 +1,6 @@
 from owslib.wfs import WebFeatureService
 from owslib.wms import WebMapService
-#import json
+import json
 
 class Traffic:
 
@@ -22,7 +22,7 @@ class Traffic:
                             )
 
     #get traffic data inside bounding box in JSON format
-    #bounding box coords
+    #bounding box coords are in EPSG format https://epsg.io/map#srs=4326&x=144.977088&y=-37.791982&z=15
     def __getJSON(self, boundingBox=(144.967260, -37.810767, 144.998717, -37.790761)):
         print("getting JSON traffic data")
         self.__JSONdata = self.__wfs.getfeature(typename='vicroads:bluetooth_links',
