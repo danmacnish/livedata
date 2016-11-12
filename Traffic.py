@@ -34,9 +34,18 @@ class Traffic:
     def __processJSON(self):
         #process JSON data
         print("processing JSON traffic data")
+        #save JSON data to file
         out = open('data.json', 'w')
         out.write(self.__JSONdata.read())
         out.close()
+        #decode JSON data into python object
+        try:
+            data = json.load(self.__JSONdata)
+            print(data)
+        except ValueError as inst:
+            print(type(inst))
+            print(inst.args)
+            print(inst)
 
     def update(self):
         self.__traffic = 100
