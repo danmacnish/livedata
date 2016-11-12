@@ -11,7 +11,7 @@ class Plant:
 
 def main():
     trfc = Traffic()
-    t = trfc.update()
+    t = trfc.update(True)
     print(t)
 
 if __name__ == "__main__":
