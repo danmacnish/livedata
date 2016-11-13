@@ -15,16 +15,15 @@ class Traffic:
     def __getJSON(self, noInternet=False, boundingBox=(144.967260, -37.810767, 144.998717, -37.790761)):
         if noInternet is False:
             print("getting JSON traffic data from server")
-            # add debug mode flag that loads old data from file instead of getting new data
-            data = self.__wfs.getfeature(typename='vicroads:bluetooth_links',
-                                         bbox=boundingBox,
-                                         outputFormat='application/json',
-                                         **self.__kwargs
-                                         )
             try:
+                #get data from web service
+                data = self.__wfs.getfeature(typename='vicroads:bluetooth_links',
+                                             bbox=boundingBox,
+                                             outputFormat='application/json',
+                                             **self.__kwargs
+                                             )
                 # decode JSON data into python object
                 self.__JSONdata = json.load(data)
-                print(data)
             except ValueError as inst:
                 print(type(inst))
                 print(inst.args)
@@ -45,9 +44,10 @@ class Traffic:
         # access and print the data we want (particular rd, etc)
         print(self.__JSONdata['bbox'])
         for x in self.__JSONdata['features']:
-            if x['id'] is 'bluetooth_links.379':
-                properties = self.__JSONdata['features'][x]['properties']
-                print(properties['name'], properties['trend'], properties['bbox'])
+            print(x['id'])
+            if x['id'] is 'bluetooth_links.533':
+                properties = x['properties']
+                print(properties['name'], properties['delay'], properties['bbox'])
 
     def __connectToServer(self, noInternet=False):
         if noInternet is False:
