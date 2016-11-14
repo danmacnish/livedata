@@ -43,11 +43,9 @@ class Traffic:
         print("processing JSON traffic data")
         # access and print the data we want (particular rd, etc)
         print(self.__JSONdata['bbox'])
-        for x in self.__JSONdata['features']:
-            print(x['id'])
-            if x['id'] is 'bluetooth_links.533':
-                properties = x['properties']
-                print(properties['name'], properties['delay'], properties['bbox'])
+        #calculate average delay
+        delays = [x['properties']['delay'] for x in self.__JSONdata['features']]
+        self.__averageDelay = sum(delays)/len(delays)
 
     def __connectToServer(self, noInternet=False):
         if noInternet is False:
@@ -71,7 +69,7 @@ class Traffic:
         self.__connectToServer(noInternet)
         self.__getJSON(noInternet)
         self.__processJSON()
-        return self.__traffic
+        return self.__averageDelay
 
 # img = wms.getmap(layers=['bluetooth_links'],
 #                 styles=['purple_line'],
