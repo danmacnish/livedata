@@ -44,7 +44,7 @@ class Traffic:
         # access and print the data we want (particular rd, etc)
         print(self.__JSONdata['bbox'])
         #calculate average delay
-        delays = [x['properties']['delay'] for x in self.__JSONdata['features']]
+        delays = [(x['properties']['timestamp'],x['properties']['delay']) for x in self.__JSONdata['features']]
         self.__averageDelay = sum(delays)/len(delays)
 
     def __connectToServer(self, noInternet=False):
