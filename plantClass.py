@@ -1,4 +1,5 @@
 import sys
+import time, datetime
 from Traffic import Traffic
 
 class Plant:
@@ -14,6 +15,10 @@ def main():
     NO_INTERNET = False
     trfc = Traffic()
     t = trfc.update(NO_INTERNET)
+    #log average and timestamp to file
+    with open('log.txt', 'a') as file:
+        file.write(str(t) + ',' + str(datetime.datetime.now()) + '\n')
+    file.close()
 
 if __name__ == "__main__":
     sys.exit(main())
