@@ -14,7 +14,6 @@ def main():
     NO_INTERNET = False
     trfc = Traffic()
     t = trfc.update(NO_INTERNET)
-    print(t)
 
 if __name__ == "__main__":
     sys.exit(main())
