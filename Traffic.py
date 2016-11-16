@@ -10,7 +10,7 @@ class Traffic:
             'AUTH': 'eyJraWQiOiJRRFFQWDZVSDlQRExOOU9GQVowMlNFRFVYIiwic3R0IjoiYWNjZXNzIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiIzd1lpbjFJeHBWWVNiSTZwZkxtQVZMIiwiaWF0IjoxNDc1NTU1NTI2LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy80QXk3eUYybVFDaUJacVB6OUN5UVU4Iiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy8zdktRd3VTZEQ0OVl3a25Kb1lYTllXIiwiZXhwIjoxNDkxNDUzMTI2fQ.yjUbqzx3df0EtxzOXXX8uHnK-c1X7yiWff1gzGvrv08'}
         self.__APItoken = 'AUTH=eyJraWQiOiJRRFFQWDZVSDlQRExOOU9GQVowMlNFRFVYIiwic3R0IjoiYWNjZXNzIiwiYWxnIjoiSFMyNTYifQ.eyJqdGkiOiIzd1lpbjFJeHBWWVNiSTZwZkxtQVZMIiwiaWF0IjoxNDc1NTU1NTI2LCJpc3MiOiJodHRwczovL2FwaS5zdG9ybXBhdGguY29tL3YxL2FwcGxpY2F0aW9ucy80QXk3eUYybVFDaUJacVB6OUN5UVU4Iiwic3ViIjoiaHR0cHM6Ly9hcGkuc3Rvcm1wYXRoLmNvbS92MS9hY2NvdW50cy8zdktRd3VTZEQ0OVl3a25Kb1lYTllXIiwiZXhwIjoxNDkxNDUzMTI2fQ.yjUbqzx3df0EtxzOXXX8uHnK-c1X7yiWff1gzGvrv08'
         #how old the traffic data is before it is deemed irrelevant, in seconds
-        self.dataExpiry = 900 #15 minutes
+        self.dataExpiry = 1800 #30 minutes
 
     # get traffic data inside bounding box in JSON format
     # bounding box coords are in EPSG format https://epsg.io/map#srs=4326&x=144.977088&y=-37.791982&z=15
@@ -54,12 +54,16 @@ class Traffic:
             (year, month, day, hour, minute, second) = int(tstamp[0:4]), int(tstamp[5:7]), int(tstamp[8:10]), int(tstamp[11:13]), int(tstamp[14:16]), int(tstamp[17:19])
             delta = datetime.datetime.utcnow() - datetime.datetime(year, month, day, hour, minute, second )
             self.__delays.append({'timestamp':tstamp,'delay':delay,'delta':delta})
+            #print(delta.total_seconds())
         #remove first element in list because it's empty
         self.__delays.pop(0)
         #calculate average delay, excluding data that's more than 15 minutes old
-        self.__averageDelay = sum([x['delay'] for x in self.__delays if x['delta'].total_seconds() < self.dataExpiry])/len(self.__delays)
+        recentDelays = [x['delay'] for x in self.__delays if x['delta'].total_seconds() < self.dataExpiry]
+        self.__averageDelay = sum(recentDelays)/len(recentDelays)
         #print average delay
         print("average delay is", self.__averageDelay)
+        #print 6th element (debug)
+        print(str(self.__delays[6]['timestamp']) + ', ' + str(self.__delays[6]['delay']))
 
 
     def __connectToServer(self, noInternet=False):
