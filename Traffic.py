@@ -61,7 +61,7 @@ class Traffic:
         #recentDelays = [x['delay'] for x in self.__delays if x['delta'].total_seconds() < self.dataExpiry]
         #self.__averageDelay = sum(recentDelays)/len(recentDelays)
         #print average delay
-        print("average delay is", self.__averageDelay)
+        #print("average delay is", self.__averageDelay)
         #print elements
         for x in self.__delays:
             print(str(x['timestamp']) + ', ' + str(x['delta'].total_seconds()) + ', ' + str(x['trend']))
