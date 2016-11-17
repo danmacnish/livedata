@@ -69,18 +69,21 @@ class Traffic:
 
     def connectToServer(self, noInternet=False):
         if noInternet is False:
-            print('connecting to server')
-            # open connection to get JSON traffic data
-            self.__wfs = WebFeatureService(url='http://api.vicroads.vic.gov.au/vicroads/wfs?' + self.__APItoken,
-                                           version='1.1.0',
-                                           username=None,
-                                           password=None, )
+            try:
+                print('connecting to server')
+                # open connection to get JSON traffic data
+                self.__wfs = WebFeatureService(url='http://api.vicroads.vic.gov.au/vicroads/wfs?' + self.__APItoken,
+                                               version='1.1.0',
+                                               username=None,
+                                               password=None, )
 
-            # open connection to get map tiles with traffic lines
-            self.__wms = WebMapService('http://api.vicroads.vic.gov.au/vicroads/wms?' + self.__APItoken,
-                                       version='1.1.1', username=None,
-                                       password=None,
-                                       )
+                # open connection to get map tiles with traffic lines
+                self.__wms = WebMapService('http://api.vicroads.vic.gov.au/vicroads/wms?' + self.__APItoken,
+                                           version='1.1.1', username=None,
+                                           password=None,
+                                           )
+            except ReadTimeout:
+                print('request timeout')
         else:
             print("no internet connection, will load old data from file instead")
 
