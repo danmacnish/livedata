@@ -64,7 +64,7 @@ class Traffic:
         print("average congestion is", self.__averageDelay)
         #print data
         for x in self.__delays:
-            print(str(x['timestamp']) + ', ' + str(x['delay']) + ', ' + str(x['delta'].total_seconds()))
+            print(str(x['timestamp']) + ', ' + str(x['congestion']) + ', ' + str(x['delta'].total_seconds()))
 
 
     def connectToServer(self, noInternet=False):
