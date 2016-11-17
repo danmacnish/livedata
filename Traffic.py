@@ -46,45 +46,48 @@ class Traffic:
         # access and print the data we want (particular rd, etc)
         print(self.__JSONdata['bbox'])
         #build list containing delays with corresponding timestamp
-        delays = [(x['properties']['timestamp'],x['properties']['delay']) for x in self.__JSONdata['features']]
+        delays = [(x['properties']['timestamp'],x['properties']['trend']) for x in self.__JSONdata['features']]
         #calculate timedelta and add to delays list
         self.__delays = [dict()]
-        for tstamp, delay in delays:
+        for tstamp, trend in delays:
             #YYYY-MM-DDTHH:MM:SS.sss
             (year, month, day, hour, minute, second) = int(tstamp[0:4]), int(tstamp[5:7]), int(tstamp[8:10]), int(tstamp[11:13]), int(tstamp[14:16]), int(tstamp[17:19])
             delta = datetime.datetime.utcnow() - datetime.datetime(year, month, day, hour, minute, second )
-            self.__delays.append({'timestamp':tstamp,'delay':delay,'delta':delta})
+            self.__delays.append({'timestamp':tstamp,'trend':trend,'delta':delta})
             #print(delta.total_seconds())
         #remove first element in list because it's empty
         self.__delays.pop(0)
         #calculate average delay, excluding data that's more than 15 minutes old
-        recentDelays = [x['delay'] for x in self.__delays if x['delta'].total_seconds() < self.dataExpiry]
-        self.__averageDelay = sum(recentDelays)/len(recentDelays)
+        #recentDelays = [x['delay'] for x in self.__delays if x['delta'].total_seconds() < self.dataExpiry]
+        #self.__averageDelay = sum(recentDelays)/len(recentDelays)
         #print average delay
         print("average delay is", self.__averageDelay)
-        #print 6th element (debug)
-        print(str(self.__delays[6]['timestamp']) + ', ' + str(self.__delays[6]['delay']) + ', ' + str(self.__delays[6]['delta'].total_seconds()))
+        #print elements
+        for x in self.__delays:
+            print(str(x['timestamp']) + ', ' + str(x['delta'].total_seconds()) + ', ' + str(x['trend']))
 
 
-    def __connectToServer(self, noInternet=False):
+    def connectToServer(self, noInternet=False):
         if noInternet is False:
-            print('connecting to server')
-            # open connection to get JSON traffic data
-            self.__wfs = WebFeatureService(url='http://api.vicroads.vic.gov.au/vicroads/wfs?' + self.__APItoken,
-                                           version='1.1.0',
-                                           username=None,
-                                           password=None, )
+            try:
+                print('connecting to server')
+                # open connection to get JSON traffic data
+                self.__wfs = WebFeatureService(url='http://api.vicroads.vic.gov.au/vicroads/wfs?' + self.__APItoken,
+                                               version='1.1.0',
+                                               username=None,
+                                               password=None, )
 
-            # open connection to get map tiles with traffic lines
-            self.__wms = WebMapService('http://api.vicroads.vic.gov.au/vicroads/wms?' + self.__APItoken,
-                                       version='1.1.1', username=None,
-                                       password=None,
-                                       )
+                # open connection to get map tiles with traffic lines
+                self.__wms = WebMapService('http://api.vicroads.vic.gov.au/vicroads/wms?' + self.__APItoken,
+                                           version='1.1.1', username=None,
+                                           password=None,
+                                           )
+            except ReadTimeout:
+                print('request timeout')
         else:
             print("no internet connection, will load old data from file instead")
 
     def update(self, noInternet=False):
-        self.__connectToServer(noInternet)
         self.__getJSON(noInternet)
         self.__processJSON()
         return self.__averageDelay
