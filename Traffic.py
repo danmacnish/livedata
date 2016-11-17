@@ -53,7 +53,7 @@ class Traffic:
             #YYYY-MM-DDTHH:MM:SS.sss
             (year, month, day, hour, minute, second) = int(tstamp[0:4]), int(tstamp[5:7]), int(tstamp[8:10]), int(tstamp[11:13]), int(tstamp[14:16]), int(tstamp[17:19])
             delta = datetime.datetime.utcnow() - datetime.datetime(year, month, day, hour, minute, second )
-            self.__delays.append({'timestamp':tstamp,'congestion':delay,'delta':delta})
+            self.__delays.append({'timestamp':tstamp,'congestion':congestion,'delta':delta})
             #print(delta.total_seconds())
         #remove first element in list because it's empty
         self.__delays.pop(0)
