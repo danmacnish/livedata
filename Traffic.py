@@ -90,7 +90,7 @@ class Traffic:
     def update(self, noInternet=False):
         self.__getJSON(noInternet)
         self.__processJSON()
-        return self.__averageDelay
+        return 100#self.__averageDelay
 
 # img = wms.getmap(layers=['bluetooth_links'],
 #                 styles=['purple_line'],
