@@ -14,13 +14,14 @@ def main():
     #set no internet to true to load data from file instead of acquiring from server
     NO_INTERNET = False
     trfc = Traffic()
+    trfc.connectToServer(NO_INTERNET)
     while True:
         t = trfc.update(NO_INTERNET)
         #log average and timestamp to file
         with open('log.txt', 'a') as file:
             file.write(str(t) + ',' + str(datetime.datetime.now()) + '\n')
         file.close()
-        time.sleep(880) #wait for 880 seconds
+        time.sleep(450) #wait for 880 seconds
 
 if __name__ == "__main__":
     sys.exit(main())

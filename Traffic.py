@@ -45,28 +45,29 @@ class Traffic:
         print("processing JSON traffic data")
         # access and print the data we want (particular rd, etc)
         print(self.__JSONdata['bbox'])
-        #build list containing delays with corresponding timestamp
-        delays = [(x['properties']['timestamp'],x['properties']['delay']) for x in self.__JSONdata['features']]
-        #calculate timedelta and add to delays list
-        self.__delays = [dict()]
-        for tstamp, delay in delays:
+        #build list containing travel_times with corresponding timestamp
+        travel_times = [(x['properties']['timestamp'],x['properties']['travel_time']) for x in self.__JSONdata['features']]
+        #calculate timedelta and add to travel_times list
+        self.__travel_times = [dict()]
+        for tstamp, travel_time in travel_times:
             #YYYY-MM-DDTHH:MM:SS.sss
             (year, month, day, hour, minute, second) = int(tstamp[0:4]), int(tstamp[5:7]), int(tstamp[8:10]), int(tstamp[11:13]), int(tstamp[14:16]), int(tstamp[17:19])
             delta = datetime.datetime.utcnow() - datetime.datetime(year, month, day, hour, minute, second )
-            self.__delays.append({'timestamp':tstamp,'delay':delay,'delta':delta})
+            self.__travel_times.append({'timestamp':tstamp,'travel_time':travel_time,'delta':delta})
             #print(delta.total_seconds())
         #remove first element in list because it's empty
-        self.__delays.pop(0)
-        #calculate average delay, excluding data that's more than 15 minutes old
-        recentDelays = [x['delay'] for x in self.__delays if x['delta'].total_seconds() < self.dataExpiry]
-        self.__averageDelay = sum(recentDelays)/len(recentDelays)
-        #print average delay
-        print("average delay is", self.__averageDelay)
-        #print 6th element (debug)
-        print(str(self.__delays[6]['timestamp']) + ', ' + str(self.__delays[6]['delay']) + ', ' + str(self.__delays[6]['delta'].total_seconds()))
+        self.__travel_times.pop(0)
+        #calculate average travel_time, excluding data that's more than 15 minutes old
+        recenttravel_times = [x['travel_time'] for x in self.__travel_times if x['delta'].total_seconds() < self.dataExpiry]
+        self.__averagetravel_time = sum(recenttravel_times)/len(recenttravel_times)
+        #print average travel_time
+        print("average travel_time is", self.__averagetravel_time)
+        #print data
+        for x in self.__travel_times:
+            print(str(x['timestamp']) + ', ' + str(x['travel_time']) + ', ' + str(x['delta'].total_seconds()))
 
 
-    def __connectToServer(self, noInternet=False):
+    def connectToServer(self, noInternet=False):
         if noInternet is False:
             try:
                 print('connecting to server')
@@ -87,10 +88,9 @@ class Traffic:
             print("no internet connection, will load old data from file instead")
 
     def update(self, noInternet=False):
-        self.__connectToServer(noInternet)
         self.__getJSON(noInternet)
         self.__processJSON()
-        return self.__averageDelay
+        return self.__averagetravel_time
 
 # img = wms.getmap(layers=['bluetooth_links'],
 #                 styles=['purple_line'],
