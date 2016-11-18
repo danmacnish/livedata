@@ -14,6 +14,7 @@ def main():
     #set no internet to true to load data from file instead of acquiring from server
     NO_INTERNET = False
     trfc = Traffic()
+    trfc.connectToServer(NO_INTERNET)
     while True:
         t = trfc.update(NO_INTERNET)
         #log average and timestamp to file

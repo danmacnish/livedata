@@ -62,11 +62,12 @@ class Traffic:
         self.__averageDelay = sum(recentDelays)/len(recentDelays)
         #print average delay
         print("average delay is", self.__averageDelay)
-        #print 6th element (debug)
-        print(str(self.__delays[6]['timestamp']) + ', ' + str(self.__delays[6]['delay']) + ', ' + str(self.__delays[6]['delta'].total_seconds()))
+        #print data
+        for x in self.__delays:
+            print(str(x['timestamp']) + ', ' + str(x['delay']) + ', ' + str(x['delta'].total_seconds()))
 
 
-    def __connectToServer(self, noInternet=False):
+    def connectToServer(self, noInternet=False):
         if noInternet is False:
             try:
                 print('connecting to server')
@@ -87,7 +88,6 @@ class Traffic:
             print("no internet connection, will load old data from file instead")
 
     def update(self, noInternet=False):
-        self.__connectToServer(noInternet)
         self.__getJSON(noInternet)
         self.__processJSON()
         return self.__averageDelay
