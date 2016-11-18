@@ -67,7 +67,7 @@ class Traffic:
             print(str(x['timestamp']) + ', ' + str(x['delay']) + ', ' + str(x['delta'].total_seconds()))
 
 
-    def __connectToServer(self, noInternet=False):
+    def connectToServer(self, noInternet=False):
         if noInternet is False:
             print('connecting to server')
             # open connection to get JSON traffic data
@@ -85,7 +85,6 @@ class Traffic:
             print("no internet connection, will load old data from file instead")
 
     def update(self, noInternet=False):
-        self.__connectToServer(noInternet)
         self.__getJSON(noInternet)
         self.__processJSON()
         return self.__averageDelay
