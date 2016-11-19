@@ -49,6 +49,8 @@ def getData(queue ,internet, pollPeriod):
     while True:
         #traffic.update returns the average delay in minutes for the area. 0 = normal free flowing traffic, -ve is faster than usual, +ve is slower traffic
         t = trfc.update(internet)
+        # print average delay
+        print("average delay is", t)
         #push new delay to queue
         queue.put(t)
         # log average and timestamp to file

@@ -68,8 +68,6 @@ class Traffic:
         #calculate average delay, excluding data that's more than 15 minutes old
         recentDelays = [x['delay'] for x in self.__delays if x['delta'].total_seconds() < self.dataExpiry]
         self.__averageDelay = sum(recentDelays)/len(recentDelays)
-        #print average delay
-        print("average delay is", self.__averageDelay)
         #print data
         for x in self.__delays:
             print(str(x['timestamp']) + ', ' + str(x['delay']) + ', ' + str(x['delta'].total_seconds()))
