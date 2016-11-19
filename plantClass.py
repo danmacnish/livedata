@@ -3,7 +3,7 @@ import time, datetime
 import thread
 from Traffic import Traffic
 import Queue
-from Pump import Pump
+from DummyPump import Pump #use dummy class for dev on windows
 
 class Plant:
     def __init__(self):
