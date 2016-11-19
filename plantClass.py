@@ -3,6 +3,7 @@ import time, datetime
 import thread
 from Traffic import Traffic
 import Queue
+from Pump import Pump
 
 class Plant:
     def __init__(self):
@@ -42,9 +43,12 @@ def getData(queue ,internet, pollPeriod):
 def controlPlant(queue):
     plant = Plant()
     while True:
-        print()
+        print('getting data from queue...')
+        try:
+            trafficDelay = queue.get()
+        except Queue.Empty:
+            print('queue empty')
 
-def
 
 if __name__ == "__main__":
     sys.exit(main())
