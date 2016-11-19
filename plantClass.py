@@ -14,13 +14,15 @@ class Plant:
 
 def main():
     #set no internet to true to load data from file instead of acquiring from server
-    NO_INTERNET = False
-    data = Queue()
+    NO_INTERNET = True
+    data = Queue.Queue()
     try:
         thread.start_new_thread(getData, (data, NO_INTERNET, 5))
-        thread.start_new_thread(controlPlant, ())
+        thread.start_new_thread(controlPlant, (data,))
     except:
         print('could not create threads')
+    while True:
+        time.sleep(1)
 
 
 #function to get data, log data to file
@@ -44,6 +46,7 @@ def controlPlant(q):
         time.sleep(1)
         print('pump off')
         time.sleep(1)
+        print(q.empty())
 
 if __name__ == "__main__":
     sys.exit(main())
