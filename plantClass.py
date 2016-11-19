@@ -26,27 +26,25 @@ def main():
 
 
 #function to get data, log data to file
-def getData(q ,internet, pollPeriod):
+def getData(queue ,internet, pollPeriod):
     trfc = Traffic()
     trfc.connectToServer(internet)
     while True:
         t = trfc.update(internet)
         #push new delay to queue
-        q.put(t)
+        queue.put(t)
         # log average and timestamp to file
         with open('log.txt', 'a') as file:
             file.write(str(t) + ',' + str(datetime.datetime.now()) + '\n')
         file.close()
         time.sleep(pollPeriod*60)
 
-def controlPlant(q):
+def controlPlant(queue):
     plant = Plant()
     while True:
-        print('pump on')
-        time.sleep(1)
-        print('pump off')
-        time.sleep(1)
-        print(q.empty())
+        print()
+
+def
 
 if __name__ == "__main__":
     sys.exit(main())
