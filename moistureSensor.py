@@ -2,14 +2,14 @@ class moistureSensor:
 
     def __init__(self):
         #init GPIO
-        self.max = 0
-        self.min = 0
+        self.__max = 820
+        self.__min = 420
 
     def getMoisture(self):
-        #read sensor
+        return 600
 
     def getMin(self):
-        return self.min
+        return self.__min
 
     def getMax(self):
-        return self.max
+        return self.__max
