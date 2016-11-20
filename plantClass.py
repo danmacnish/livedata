@@ -12,7 +12,7 @@ class Plant:
         self.__pump = Pump(1)
         self.__soil = moistureSensor()
         self.__K = 50
-        self.__Heathly = 600 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
+        self.__Healthy = 600 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
 
     def calcPumpDuration(self, traffic):
         #calculate how wilted we want the plant to be based on the current traffic data, using PID to control soil moisture
@@ -26,7 +26,13 @@ class Plant:
 
     #clamp function to limit values
     def __clamp(self,val, min, max):
-        return max(min(max, val), min)
+        if val > max:
+            ret = max
+        elif val < min:
+            ret = min
+        else:
+            ret = val
+        return ret
 
 
 def main():
@@ -65,10 +71,11 @@ def controlPlant(queue):
     while True:
         print('getting data from queue...')
         try:
-            trafficDelay = queue.get()
+            trafficDelay = queue.get_nowait()
         except Queue.Empty:
             print('queue empty')
         plant.calcPumpDuration(trafficDelay)
+        time.sleep(5)
 
 if __name__ == "__main__":
     sys.exit(main())
