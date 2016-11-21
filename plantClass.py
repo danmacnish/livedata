@@ -11,19 +11,32 @@ class Plant:
         #turns pump on and off @ relay 1
         self.__pump = Pump(1)
         self.__soil = moistureSensor()
-        self.__K = 10
+        self.__K = 10 #proportional term for moisture SP calculation
+        self.__K2 = 10 #proportional term for pump duration
         self.__Healthy = 730 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
+        self.__pumpBaseDuration = 2000 #pump duration in ms. PID operates around this value.
 
-    def calcPumpDuration(self, traffic):
+    def __calcPumpDuration(self, traffic):
         #calculate how wilted we want the plant to be based on the current traffic data, using PID to control soil moisture
         #first calculate the moisture setpoint based on the current traffic (more congestion -> drier soil)
-        moistureSP = self.__Healthy + self.__K * traffic
-        #Limit value within min/max of moisture SP
-        moistureSP = self.__clamp(moistureSP, self.__soil.getMin(), self.__soil.getMax())
+        moistureSP = self.__trafficToMoistureSP(traffic)
         #calculate error term
         error = moistureSP - self.__soil.getMoisture()
-        print('moisture error is: ' + str(error))
+        # turn error into pump duration
+        pumpDuration = self.__pumpBaseDuration + error * self.__K2
+        self.__pump.setDuration(pumpDuration)
+        print(str(datetime.datetime.now()) + ' moisture error is: ' + str(error))
 
+    def __trafficToMoistureSP(self, traffic):
+        # calculate the moisture setpoint based on the current traffic (more congestion -> drier soil)
+        moistureSP = self.__Healthy + self.__K * traffic
+        # Limit value within min/max of moisture SP
+        moistureSP = self.__clamp(moistureSP, self.__soil.getMin(), self.__soil.getMax())
+        return moistureSP
+
+    def waterPlant(self, traffic):
+        self.__calcPumpDuration(traffic)
+        self.__pump.water()
 
     #clamp function to limit values
     def __clamp(self,val, min, max):
@@ -41,8 +54,8 @@ def main():
     NO_INTERNET = False
     data = Queue.Queue()
     try:
-        thread.start_new_thread(getData, (data, NO_INTERNET, 10))
-        thread.start_new_thread(controlPlant, (data,))
+        thread.start_new_thread(getData, (data, NO_INTERNET, 10)) #arguments: queue, flag, period to get new data in minutes
+        thread.start_new_thread(controlPlant, (data, 0.1)) #arguments: queue, watering period
     except:
         print('could not create threads')
     while True:
@@ -66,7 +79,7 @@ def getData(queue ,internet, pollPeriod):
         file.close()
         time.sleep(pollPeriod*60)
 
-def controlPlant(queue):
+def controlPlant(queue, period):
     plant = Plant()
     trafficDelay = 0 #initialised to no delay
     while True:
@@ -75,8 +88,8 @@ def controlPlant(queue):
             trafficDelay = queue.get_nowait()
         except Queue.Empty:
             print('queue empty')
-        plant.calcPumpDuration(trafficDelay)
-        time.sleep(5)
+        plant.waterPlant(trafficDelay)
+        time.sleep(period*60)
 
 if __name__ == "__main__":
     sys.exit(main())
