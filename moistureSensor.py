@@ -5,6 +5,7 @@ class moistureSensor:
 
     def __init__(self):
         #init arduino board
+        self.__serial = None
         try:
             self.__serial = serial.Serial('/dev/tty.usbserial', 9600, timeout = 0, write_timeout = 1)
         except serial.SerialException:
@@ -14,17 +15,21 @@ class moistureSensor:
         self.__min = 393
 
     def getMoisture(self):
-        try:
-            self.__serial.write(b'1') #write 1 to serial port
-        except serial.SerialTimeoutException:
-            print('serial port write timeout')
-        self.__delay(1000) #wait for arduino to send back data
-        try:
-            bytes = self.__serial.read(2)
-        except serial.SerialException:
-            print('couldnt read from serial port')
-        moisture = int.from_bytes(bytes, byteorder='big')
-        print('soil moisture is ' + str(moisture))
+        if self.__serial is not None:
+            try:
+                self.__serial.write(b'1') #write 1 to serial port
+            except serial.SerialTimeoutException:
+                print('serial port write timeout')
+            self.__delay(1000) #wait for arduino to send back data
+            try:
+                bytes = self.__serial.read(2)
+            except serial.SerialException:
+                print('couldnt read from serial port')
+            moisture = int.from_bytes(bytes, byteorder='big')
+            print('soil moisture is ' + str(moisture))
+        else:
+            print('serial port not initialised, cant get moisture')
+            moisture = 0
         return moisture
 
     def getMin(self):

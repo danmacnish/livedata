@@ -24,6 +24,7 @@ class Plant:
         error = moistureSP - self.__soil.getMoisture()
         # turn error into pump duration
         pumpDuration = self.__pumpBaseDuration + error * self.__K2
+        pumpDuration = self.__clamp(pumpDuration, 0 , 6000) #limit pump duration between 0 and 6 seconds
         self.__pump.setDuration(pumpDuration)
         print(str(datetime.datetime.now()) + ' moisture error is: ' + str(error))
 
