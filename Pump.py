@@ -5,7 +5,7 @@ class Pump:
     def __init__(self, num):
         # init GPIO
         self.__relayNumber = num
-        self.__relays = pifacerelayplus.PiFaceRelayPlus(None,7) #piface board is configured with address 7, and no expansion board
+        self.__relays = pifacerelayplus.PiFaceRelayPlus(None,0) #piface board is configured with address 7, and no expansion board
         self.period = 1  # time to turn light on
         self.__duration = 2  # time to turn light off
 
