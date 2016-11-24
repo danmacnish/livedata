@@ -3,7 +3,7 @@ import time, datetime
 import thread
 from Traffic import Traffic
 import Queue
-from DummyPump import Pump #use dummy class for dev on windows
+from Pump import Pump #use dummy class for dev on windows
 from moistureSensor import moistureSensor
 
 class Plant:

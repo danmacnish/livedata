@@ -30,5 +30,5 @@ class Pump:
     def __delay(self, ms):
         start = datetime.datetime.now()
         delta = datetime.datetime.now() - start
-        while (delta.total_seconds() * 1000 < ms)
+        while (delta.total_seconds() * 1000 < ms):
             delta = datetime.datetime.now() - start

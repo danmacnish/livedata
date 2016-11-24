@@ -8,7 +8,7 @@ class moistureSensor:
         #init arduino board
         self.__board = None
         try:
-            self.__board = Arduino('/dev/cu.usbmodemfa131')
+            self.__board = Arduino('/dev/ttyACM0')
             self.__it = util.Iterator(self.__board)
             self.__it.start()
             self.__board.analog[0].enable_reporting()
