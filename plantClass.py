@@ -14,7 +14,7 @@ class Plant:
         self.__K = 10 #proportional term for moisture SP calculation
         self.__K2 = 10 #proportional term for pump duration
         self.__Healthy = 430 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
-        self.__pumpBaseDuration = 2000 #pump duration in ms. PID operates around this value.
+        self.__pumpBaseDuration = 3000 #pump duration in ms. PID operates around this value.
 
     def __calcPumpDuration(self, traffic):
         #calculate how wilted we want the plant to be based on the current traffic data, using PID to control soil moisture
@@ -56,7 +56,7 @@ def main():
     data = Queue.Queue()
     try:
         thread.start_new_thread(getData, (data, NO_INTERNET, 15)) #arguments: queue, flag, period to get new data in minutes
-        thread.start_new_thread(controlPlant, (data, 3)) #arguments: queue, watering period
+        thread.start_new_thread(controlPlant, (data, 15)) #arguments: queue, watering period
     except:
         print('could not create threads')
     while True:
