@@ -11,11 +11,11 @@ class Pump:
 
     def __on(self):
         #turn pump on
-        self.__relays[self.__relayNumber].turn_on()
+        self.__relays.relays[self.__relayNumber].turn_on()
         print(str(datetime.datetime.now()) + ' pump on')
 
     def __off(self):
-        self.__relays[self.__relayNumber].turn_off()
+        self.__relays.relays[self.__relayNumber].turn_off()
         print(str(datetime.datetime.now()) + ' pump off')
 
     def setDuration(self, duration):
