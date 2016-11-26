@@ -20,7 +20,7 @@ class Pump:
         self.__duration = duration
 
     def water(self):
-        print(str('watering plant for ' + str(self.__duration/1000) + ' seconds')
+        print('watering plant for ' + str(self.__duration/1000) + ' seconds')
         self.__on()
         self.__delay(self.__duration)
         self.__off()
