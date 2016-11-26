@@ -97,9 +97,12 @@ def controlPlant(queue, period):
         try:
             trafficDelay = queue.get_nowait()
         except Queue.Empty:
+            #if no data in queue then just operate on previous data
         plant.waterPlant(trafficDelay)
-        for i
-        time.sleep(period*60)
+        #log moisture data and pump duration until next watering cycle
+        for x in range(0, period)
+            plant.log()
+            sleep(60)
 
 if __name__ == "__main__":
     sys.exit(main())
