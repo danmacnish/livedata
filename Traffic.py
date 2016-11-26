@@ -2,6 +2,7 @@ from owslib.wfs import WebFeatureService
 from owslib.wms import WebMapService
 import time, datetime
 import json
+import random
 
 
 class Traffic:
@@ -19,6 +20,8 @@ class Traffic:
         self.__APItoken = 'AUTH=' + APIToken
         #how old the traffic data is before it is deemed irrelevant, in seconds
         self.dataExpiry = 1800 #30 minutes
+        #seed the random number generator (used in the print data method)
+        random.seed()
 
     # get traffic data inside bounding box in JSON format
     # bounding box coords are in EPSG format https://epsg.io/map#srs=4326&x=144.977088&y=-37.791982&z=15
@@ -50,23 +53,22 @@ class Traffic:
     def __processJSON(self):
         # process JSON data
         #build list containing delays with corresponding timestamp
-        delays = [(x['properties']['timestamp'],x['properties']['delay']) for x in self.__JSONdata['features']]
+        delays = [(x['properties']['timestamp'],x['properties']['delay'], x['properties']['name']) for x in self.__JSONdata['features']]
         #calculate timedelta and add to delays list
         self.__delays = [dict()]
-        for tstamp, delay in delays:
+        for tstamp, delay, name in delays:
             #YYYY-MM-DDTHH:MM:SS.sss
             (year, month, day, hour, minute, second) = int(tstamp[0:4]), int(tstamp[5:7]), int(tstamp[8:10]), int(tstamp[11:13]), int(tstamp[14:16]), int(tstamp[17:19])
             delta = datetime.datetime.utcnow() - datetime.datetime(year, month, day, hour, minute, second )
-            self.__delays.append({'timestamp':tstamp,'delay':delay,'delta':delta})
-            #print(delta.total_seconds())
+            self.__delays.append({'timestamp':tstamp,'delay':delay,'delta':delta, 'name':name})
         #remove first element in list because it's empty
         self.__delays.pop(0)
         #calculate average delay, excluding data that's more than 15 minutes old
         recentDelays = [x['delay'] for x in self.__delays if x['delta'].total_seconds() < self.dataExpiry]
         self.__averageDelay = sum(recentDelays)/len(recentDelays)
         #print data
-        for x in self.__delays:
-            print(str(x['timestamp']) + ', ' + str(x['delay']) + ', ' + str(x['delta'].total_seconds()))
+        #for x in self.__delays:
+        #   print(str(x['timestamp']) + ', ' + str(x['delay']) + ', ' + str(x['delta'].total_seconds()))
 
 
     def connectToServer(self, noInternet=False):
@@ -102,6 +104,13 @@ class Traffic:
             file.close()
         except IOError:
             print(str(datetime.datetime.now()) + " couldn't log traffic data to file.")
+
+    def printRandomData(self):
+        #generate a random number, and use it as an index to print a random street delay
+        x = random.randint(0, len(self.__delays) - 1)
+        print(str(self.__delays[x]['delay']) + ' minute delay on ' + str(self.__delays[x]['name']))
+
+
 
 # img = wms.getmap(layers=['bluetooth_links'],
 #                 styles=['purple_line'],

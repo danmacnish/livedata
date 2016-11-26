@@ -88,7 +88,11 @@ def getData(queue ,internet, pollPeriod):
         queue.put(t)
         # log average delay to file
         trfc.log()
-        time.sleep(pollPeriod*60)
+        # print data for a random street every two seconds until we are ready to get fresh traffic data
+        for x in range(0, pollPeriod*20):
+            trfc.printRandomData()
+            time.sleep(3)
+
 
 def controlPlant(queue, period):
     plant = Plant()
@@ -98,11 +102,12 @@ def controlPlant(queue, period):
             trafficDelay = queue.get_nowait()
         except Queue.Empty:
             #if no data in queue then just operate on previous data
+            print('watering the plant')
         plant.waterPlant(trafficDelay)
-        #log moisture data and pump duration until next watering cycle
-        for x in range(0, period)
+        #log moisture data and pump duration once per minute until next watering cycle
+        for x in range(0, period):
             plant.log()
-            sleep(60)
+            time.sleep(60)
 
 if __name__ == "__main__":
     sys.exit(main())

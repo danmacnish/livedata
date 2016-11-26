@@ -27,7 +27,6 @@ class moistureSensor:
                 moisture = self.__board.analog[0].read() * 1024
             except:
                 print('failed to read analog 0 from arduino')
-            print(str(datetime.datetime.now()) + ' soil moisture is ' + str(moisture))
         else:
             print('firmata not initialised, cant get moisture')
         return moisture
