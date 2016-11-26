@@ -14,7 +14,7 @@ class Plant:
         self.__K = 10 #proportional term for moisture SP calculation
         self.__K2 = 10 #proportional term for pump duration
         self.__Healthy = 430 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
-        self.__pumpBaseDuration = 3000 #pump duration in ms. PID operates around this value.
+        self.__pumpBaseDuration = 10000 #pump duration in ms. PID operates around this value.
 
     def __calcPumpDuration(self, traffic):
         #calculate how wilted we want the plant to be based on the current traffic data, using PID to control soil moisture
@@ -24,7 +24,7 @@ class Plant:
         error = moistureSP - self.__soil.getMoisture()
         # turn error into pump duration
         pumpDuration = self.__pumpBaseDuration + error * self.__K2
-        pumpDuration = self.__clamp(pumpDuration, 0 , 6000) #limit pump duration between 0 and 6 seconds
+        pumpDuration = self.__clamp(pumpDuration, 0 , 15000) #limit pump duration between 0 and 6 seconds
         self.__pump.setDuration(pumpDuration)
         print(str(datetime.datetime.now()) + ' moisture error is: ' + str(error))
 
