@@ -24,7 +24,6 @@ class Traffic:
     # bounding box coords are in EPSG format https://epsg.io/map#srs=4326&x=144.977088&y=-37.791982&z=15
     def __getJSON(self, noInternet=False, boundingBox=(144.967260, -37.810767, 144.998717, -37.790761)):
         if noInternet is False:
-            print("getting JSON traffic data from server")
             try:
                 #get data from web service
                 data = self.__wfs.getfeature(typename='vicroads:bluetooth_links',
@@ -50,9 +49,6 @@ class Traffic:
 
     def __processJSON(self):
         # process JSON data
-        print("processing JSON traffic data")
-        # access and print the data we want (particular rd, etc)
-        print(self.__JSONdata['bbox'])
         #build list containing delays with corresponding timestamp
         delays = [(x['properties']['timestamp'],x['properties']['delay']) for x in self.__JSONdata['features']]
         #calculate timedelta and add to delays list
@@ -97,6 +93,15 @@ class Traffic:
         self.__getJSON(noInternet)
         self.__processJSON()
         return self.__averageDelay
+
+    def log(self):
+        try:
+            # log average and timestamp to file
+            with open('logTrafficData.txt', 'a') as file:
+                file.write(str(self.__averageDelay) + ',' + str(datetime.datetime.now()) + '\n')
+            file.close()
+        except IOError:
+            print(str(datetime.datetime.now()) + " couldn't log traffic data to file.")
 
 # img = wms.getmap(layers=['bluetooth_links'],
 #                 styles=['purple_line'],

@@ -3,7 +3,7 @@ import time, datetime
 import thread
 from Traffic import Traffic
 import Queue
-from Pump import Pump #use dummy class for dev on windows
+from DummyPump import Pump #use dummy class for dev on windows
 from moistureSensor import moistureSensor
 
 class Plant:
@@ -15,6 +15,8 @@ class Plant:
         self.__K2 = 10 #proportional term for pump duration
         self.__Healthy = 430 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
         self.__pumpBaseDuration = 10000 #pump duration in ms. PID operates around this value.
+        self.__pumpDuration = 10000
+        self.__error = 0
 
     def __calcPumpDuration(self, traffic):
         #calculate how wilted we want the plant to be based on the current traffic data, using PID to control soil moisture
@@ -23,9 +25,9 @@ class Plant:
         #calculate error term
         self.__error = moistureSP - self.__soil.getMoisture()
         # turn error into pump duration
-        pumpDuration = self.__pumpBaseDuration + self.__error * self.__K2
-        pumpDuration = self.__clamp(pumpDuration, 0 , 15000) #limit pump duration between 0 and 6 seconds
-        self.__pump.setDuration(pumpDuration)
+        self.__pumpDuration = self.__pumpBaseDuration + self.__error * self.__K2
+        self.__pumpDuration = self.__clamp(self.__pumpDuration, 0 , 15000) #limit pump duration between 0 and 6 seconds
+        self.__pump.setDuration(self.__pumpDuration)
 
     def __trafficToMoistureSP(self, traffic):
         # calculate the moisture setpoint based on the current traffic (more congestion -> drier soil)
@@ -47,6 +49,17 @@ class Plant:
         else:
             ret = val
         return ret
+
+    def log(self):
+        try:
+            with open('logPlantData.txt', 'a') as file:
+                file.write(str(datetime.datetime.now()) + ', '
+                           + str(self.__soil.getMoisture()) + ', '
+                           + str(self.__error) + ', '
+                           + str(self.__pumpDuration) + '\n')
+            file.close()
+        except IOError:
+            print(str(datetime.datetime.now()) + " couldn't log plant data to file")
 
 
 def main():
@@ -73,22 +86,19 @@ def getData(queue ,internet, pollPeriod):
         print("average delay is", t)
         #push new delay to queue
         queue.put(t)
-        # log average and timestamp to file
-        with open('log.txt', 'a') as file:
-            file.write(str(t) + ',' + str(datetime.datetime.now()) + '\n')
-        file.close()
+        # log average delay to file
+        trfc.log()
         time.sleep(pollPeriod*60)
 
 def controlPlant(queue, period):
     plant = Plant()
     trafficDelay = 0 #initialised to no delay
     while True:
-        print('getting data from queue...')
         try:
             trafficDelay = queue.get_nowait()
         except Queue.Empty:
-            print('queue empty')
         plant.waterPlant(trafficDelay)
+        for i
         time.sleep(period*60)
 
 if __name__ == "__main__":
