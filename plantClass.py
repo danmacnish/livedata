@@ -21,12 +21,11 @@ class Plant:
         #first calculate the moisture setpoint based on the current traffic (more congestion -> drier soil)
         moistureSP = self.__trafficToMoistureSP(traffic)
         #calculate error term
-        error = moistureSP - self.__soil.getMoisture()
+        self.__error = moistureSP - self.__soil.getMoisture()
         # turn error into pump duration
-        pumpDuration = self.__pumpBaseDuration + error * self.__K2
+        pumpDuration = self.__pumpBaseDuration + self.__error * self.__K2
         pumpDuration = self.__clamp(pumpDuration, 0 , 15000) #limit pump duration between 0 and 6 seconds
         self.__pump.setDuration(pumpDuration)
-        print(str(datetime.datetime.now()) + ' moisture error is: ' + str(error))
 
     def __trafficToMoistureSP(self, traffic):
         # calculate the moisture setpoint based on the current traffic (more congestion -> drier soil)
