@@ -17,8 +17,8 @@ class moistureSensor:
         except:
             print("can't connect to arduino")
         #393 = immersed in nute solution, 670 = immersed in just-soaked clay balls, 770 = 9.5 hours after last soaking (i.e. fully wilted), 730 = 2 hrs from last soaking
-        self.__max = 820
-        self.__min = 393
+        self.__max = 520
+        self.__min = 350
 
     def getMoisture(self):
         moisture = -1

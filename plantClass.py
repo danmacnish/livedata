@@ -8,12 +8,11 @@ from moistureSensor import moistureSensor
 
 class Plant:
     def __init__(self):
-        #turns pump on and off @ relay 1
-        self.__pump = Pump(1)
+        self.__pump = Pump(1) #turns pump on and off @ relay 1
         self.__soil = moistureSensor()
         self.__K = 10 #proportional term for moisture SP calculation
-        self.__K2 = 10 #proportional term for pump duration
-        self.__Healthy = 430 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
+        self.__K2 = 250 #proportional term for pump duration
+        self.__Healthy = 450 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
         self.__pumpBaseDuration = 10000 #pump duration in ms. PID operates around this value.
         self.__pumpDuration = 10000
         self.__error = 0
@@ -25,7 +24,7 @@ class Plant:
         #calculate error term
         self.__error = moistureSP - self.__soil.getMoisture()
         # turn error into pump duration
-        self.__pumpDuration = self.__pumpBaseDuration + self.__error * self.__K2
+        self.__pumpDuration = self.__pumpBaseDuration - self.__error * self.__K2
         self.__pumpDuration = self.__clamp(self.__pumpDuration, 0 , 15000) #limit pump duration between 0 and 6 seconds
         self.__pump.setDuration(self.__pumpDuration)
 
