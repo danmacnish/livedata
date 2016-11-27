@@ -25,7 +25,7 @@ class Plant:
         self.__error = moistureSP - self.__soil.getMoisture()
         # turn error into pump duration
         self.__pumpDuration = self.__pumpBaseDuration - self.__error * self.__K2
-        self.__pumpDuration = self.__clamp(self.__pumpDuration, 0, 15000) #limit pump duration between 0 and 6 seconds
+        self.__pumpDuration = self.__clamp(self.__pumpDuration, 1, 15000) #limit pump duration between 0 and 6 seconds
         self.__pump.setDuration(self.__pumpDuration)
 
     def __trafficToMoistureSP(self, traffic):
