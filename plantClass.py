@@ -11,7 +11,7 @@ class Plant:
         self.__pump = Pump(1) #turns pump on and off @ relay 1
         self.__soil = moistureSensor()
         self.__K = 10 #proportional term for moisture SP calculation
-        self.__K2 = 250 #proportional term for pump duration
+        self.__K2 = 200 #proportional term for pump duration
         self.__Healthy = 450 #moisture level when plant is healthy. moisture measurement ranges from 420 (saturated) to 810 (totally dry)
         self.__pumpBaseDuration = 10000 #pump duration in ms. PID operates around this value.
         self.__pumpDuration = 10000
@@ -25,7 +25,7 @@ class Plant:
         self.__error = moistureSP - self.__soil.getMoisture()
         # turn error into pump duration
         self.__pumpDuration = self.__pumpBaseDuration - self.__error * self.__K2
-        self.__pumpDuration = self.__clamp(self.__pumpDuration, 0 , 15000) #limit pump duration between 0 and 6 seconds
+        self.__pumpDuration = self.__clamp(self.__pumpDuration, 0, 15000) #limit pump duration between 0 and 6 seconds
         self.__pump.setDuration(self.__pumpDuration)
 
     def __trafficToMoistureSP(self, traffic):
