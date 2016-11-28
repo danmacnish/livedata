@@ -25,7 +25,7 @@ class Plant:
         self.__error = moistureSP - self.__soil.getMoisture()
         # turn error into pump duration
         self.__pumpDuration = self.__pumpBaseDuration - self.__error * self.__K2
-        self.__pumpDuration = self.__clamp(self.__pumpDuration, 1, 15000) #limit pump duration between 0 and 6 seconds
+        self.__pumpDuration = self.__clamp(self.__pumpDuration, 1, 13000) #limit pump duration between 0 and 6 seconds
         self.__pump.setDuration(self.__pumpDuration)
 
     def __trafficToMoistureSP(self, traffic):
@@ -82,7 +82,7 @@ def getData(queue ,internet, pollPeriod):
         #traffic.update returns the average delay in minutes for the area. 0 = normal free flowing traffic, -ve is faster than usual, +ve is slower traffic
         t = trfc.update(internet)
         # print average delay
-        print('average traffic delay in carlton is ' + str(t) + ' minutes')
+        print('average traffic delay in Fitzroy is ' + str(t) + ' minutes')
         #push new delay to queue
         queue.put(t)
         # log average delay to file
