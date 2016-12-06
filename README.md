@@ -10,4 +10,4 @@ Control system is proportional, with feedback from a soil moisture sensor.
   (average traffic delay)---->(*K)----->(+/-)------->(*K2)---------->(Pump)
                                           |
                                           |
-                                          <-----------(soil moisture sensor)
+  (soil moisture sensor)------------------>
